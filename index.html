@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cadastro - B2B Full</title>
+<style>
+  :root {
+    --accent: #e04b31;
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --ink: #1c1f26;
+    --ink-muted: #6b7280;
+    --border: #e2e4e9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    max-width: 480px;
+    width: 100%;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.sub { color: var(--ink-muted); margin: 0 0 24px; font-size: 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; margin-top: 16px; }
+  input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .row { display: flex; gap: 12px; }
+  .row > div { flex: 1; }
+  .modo-opcoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .modo-opcao {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: center;
+  }
+  .modo-opcao.selecionado {
+    border-color: var(--accent);
+    background: #fdf1ee;
+    font-weight: 600;
+  }
+  #planos { margin-top: 12px; display: none; }
+  #planos.visivel { display: block; }
+  button[type="submit"] {
+    width: 100%;
+    margin-top: 24px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
+  .msg { margin-top: 16px; padding: 12px; border-radius: 8px; font-size: 14px; display: none; }
+  .msg.erro { background: #fdecea; color: #a12b1f; display: block; }
+  .msg.sucesso { background: #eaf7ee; color: #1e6b34; display: block; }
+  .logo { font-weight: 800; letter-spacing: -0.02em; margin-bottom: 20px; }
+  .logo span { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">B2B<span>Full</span></div>
+    <h1>Criar conta</h1>
+    <p class="sub">Preencha seus dados para acessar a plataforma.</p>
+
+    <form id="form-cadastro">
+      <div class="row">
+        <div>
+          <label for="first_name">Nome</label>
+          <input id="first_name" name="first_name" required />
+        </div>
+        <div>
+          <label for="last_name">Sobrenome</label>
+          <input id="last_name" name="last_name" required />
+        </div>
+      </div>
+
+      <label for="email">E-mail</label>
+      <input id="email" name="email" type="email" required />
+
+      <label for="password">Senha</label>
+      <input id="password" name="password" type="password" minlength="6" required />
+
+      <div class="row">
+        <div>
+          <label for="cpf_cnpj">CPF ou CNPJ</label>
+          <input id="cpf_cnpj" name="cpf_cnpj" required />
+        </div>
+        <div>
+          <label for="phone_number">Telefone</label>
+          <input id="phone_number" name="phone_number" required />
+        </div>
+      </div>
+
+      <label>Como deseja liberar o acesso?</label>
+      <div class="modo-opcoes">
+        <div class="modo-opcao selecionado" data-modo="manual">Solicitar aprovação</div>
+        <div class="modo-opcao" data-modo="pagamento">Pagar e liberar agora</div>
+      </div>
+
+      <div id="planos">
+        <label for="plano_dias">Plano</label>
+        <select id="plano_dias" name="plano_dias">
+          <option value="30">Mensal (30 dias)</option>
+          <option value="90">Trimestral (90 dias)</option>
+          <option value="365">Anual (365 dias)</option>
+        </select>
+      </div>
+
+      <button type="submit" id="btn-enviar">Criar conta</button>
+      <div class="msg" id="mensagem"></div>
+    </form>
+  </div>
+
+  <script>
+    const API_BASE = "https://b2bfull-cadastro-frqkw.ondigitalocean.app";
+
+    const form = document.getElementById("form-cadastro");
+    const opcoes = document.querySelectorAll(".modo-opcao");
+    const planosDiv = document.getElementById("planos");
+    const mensagem = document.getElementById("mensagem");
+    const btnEnviar = document.getElementById("btn-enviar");
+    let modoSelecionado = "manual";
+
+    opcoes.forEach((opcao) => {
+      opcao.addEventListener("click", () => {
+        opcoes.forEach((o) => o.classList.remove("selecionado"));
+        opcao.classList.add("selecionado");
+        modoSelecionado = opcao.dataset.modo;
+        planosDiv.classList.toggle("visivel", modoSelecionado === "pagamento");
+      });
+    });
+
+    function mostrarMensagem(texto, tipo) {
+      mensagem.textContent = texto;
+      mensagem.className = "msg " + tipo;
+    }
+
+    form.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      mensagem.className = "msg";
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = "Enviando...";
+
+      const dados = {
+        first_name: document.getElementById("first_name").value.trim(),
+        last_name: document.getElementById("last_name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value,
+        cpf_cnpj: document.getElementById("cpf_cnpj").value.trim(),
+        phone_number: document.getElementById("phone_number").value.trim(),
+        modo: modoSelecionado,
+      };
+      if (modoSelecionado === "pagamento") {
+        dados.plano_dias = Number(document.getElementById("plano_dias").value);
+      }
+
+      try {
+        const resposta = await fetch(`${API_BASE}/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados),
+        });
+        const corpo = await resposta.json();
+
+        if (!resposta.ok) {
+          throw new Error(corpo.message || "Nao foi possivel concluir o cadastro.");
+        }
+
+        if (corpo.status === "aguardando_pagamento" && corpo.checkoutUrl) {
+          mostrarMensagem("Cadastro criado! Redirecionando para o pagamento...", "sucesso");
+          window.location.href = corpo.checkoutUrl;
+          return;
+        }
+
+        mostrarMensagem(
+          "Cadastro enviado! Assim que for aprovado, voce recebera acesso a plataforma.",
+          "sucesso"
+        );
+        form.reset();
+        opcoes[0].click();
+      } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+      } finally {
+        btnEnviar.disabled = false;
+        btnEnviar.textContent = "Criar conta";
+      }
+    });
+  </script>
+</body>
+</html>
