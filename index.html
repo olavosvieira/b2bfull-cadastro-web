@@ -125,19 +125,21 @@
         </div>
       </div>
 
-      <label>Como deseja liberar o acesso?</label>
-      <div class="modo-opcoes">
-        <div class="modo-opcao selecionado" data-modo="manual">Solicitar aprovação</div>
-        <div class="modo-opcao" data-modo="pagamento">Pagar e liberar agora</div>
-      </div>
+      <div id="bloco-modo">
+        <label>Como deseja liberar o acesso?</label>
+        <div class="modo-opcoes">
+          <div class="modo-opcao selecionado" data-modo="manual">Solicitar aprovação</div>
+          <div class="modo-opcao" data-modo="pagamento">Pagar e liberar agora</div>
+        </div>
 
-      <div id="planos">
-        <label for="plano_dias">Plano</label>
-        <select id="plano_dias" name="plano_dias">
-          <option value="30">Mensal (30 dias)</option>
-          <option value="90">Trimestral (90 dias)</option>
-          <option value="365">Anual (365 dias)</option>
-        </select>
+        <div id="planos">
+          <label for="plano_dias">Plano</label>
+          <select id="plano_dias" name="plano_dias">
+            <option value="30">Mensal (30 dias)</option>
+            <option value="90">Trimestral (90 dias)</option>
+            <option value="365">Anual (365 dias)</option>
+          </select>
+        </div>
       </div>
 
       <button type="submit" id="btn-enviar">Criar conta</button>
@@ -148,6 +150,12 @@
   <script>
     const API_BASE = "https://b2bfull-cadastro-frqkw.ondigitalocean.app";
 
+    // Pagamento via Asaas desligado ate as credenciais estarem configuradas no
+    // App Platform (ASAAS_API_KEY e ASAAS_WEBHOOK_TOKEN estao vazias e os
+    // PLANO_*_PRECO estao em "0"). Com isso o unico caminho e "manual".
+    // Para reativar: trocar para true depois de preencher as variaveis.
+    const PAGAMENTO_HABILITADO = false;
+
     const form = document.getElementById("form-cadastro");
     const opcoes = document.querySelectorAll(".modo-opcao");
     const planosDiv = document.getElementById("planos");
@@ -155,8 +163,13 @@
     const btnEnviar = document.getElementById("btn-enviar");
     let modoSelecionado = "manual";
 
+    if (!PAGAMENTO_HABILITADO) {
+      document.getElementById("bloco-modo").style.display = "none";
+    }
+
     opcoes.forEach((opcao) => {
       opcao.addEventListener("click", () => {
+        if (!PAGAMENTO_HABILITADO) return;
         opcoes.forEach((o) => o.classList.remove("selecionado"));
         opcao.classList.add("selecionado");
         modoSelecionado = opcao.dataset.modo;
