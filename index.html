@@ -109,6 +109,9 @@
     }
     input::placeholder { color: #9a9a9a; }
     input:focus { border-color: var(--border-focus); }
+    input[readonly] { background: #f3f3f5; color: #555; cursor: default; }
+    /* Campos extras do CNPJ (Razao Social / CNAE), preenchidos automaticamente */
+    #cnpj-extra { display: none; flex-direction: column; gap: 14px; }
     .field .toggle-eye {
       position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
       background: none; border: none; cursor: pointer; padding: 4px; color: #8a8a8a;
@@ -236,6 +239,12 @@
             <span class="fld"><input id="phone_number" name="phone_number" placeholder="Telefone" required /></span>
           </div>
 
+          <!-- Preenchidos automaticamente ao digitar um CNPJ (base própria) -->
+          <div id="cnpj-extra">
+            <input id="razao_social" name="razao_social" placeholder="Razão Social" readonly />
+            <input id="cnae_principal" name="cnae_principal" placeholder="CNAE Principal" readonly />
+          </div>
+
           <div class="strength" id="strength" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
           </div>
@@ -295,8 +304,57 @@
 
     const cpfEl = document.getElementById("cpf_cnpj");
     const telEl = document.getElementById("phone_number");
-    cpfEl.addEventListener("input", () => { cpfEl.value = mascaraCpfCnpj(cpfEl.value); });
+    cpfEl.addEventListener("input", () => {
+      cpfEl.value = mascaraCpfCnpj(cpfEl.value);
+      atualizarCamposCnpj();
+    });
     telEl.addEventListener("input", () => { telEl.value = mascaraTelefone(telEl.value); });
+
+    // ---- Auto-preenchimento de Razao Social / CNAE ao digitar um CNPJ ----
+    // Usa a base propria de CNPJ (endpoint /consulta). So dispara quando o
+    // documento tem 14 digitos (CNPJ); some para CPF.
+    const CONSULTA_BASE =
+      "https://b2bfull-microservices2-zjxbo.ondigitalocean.app/consulta";
+    let ultimoCnpj = "";
+    async function atualizarCamposCnpj() {
+      const dig = cpfEl.value.replace(/\D/g, "");
+      const extra = document.getElementById("cnpj-extra");
+      const razaoEl = document.getElementById("razao_social");
+      const cnaeEl = document.getElementById("cnae_principal");
+
+      if (dig.length !== 14) {
+        extra.style.display = "none";
+        razaoEl.value = "";
+        cnaeEl.value = "";
+        ultimoCnpj = "";
+        return;
+      }
+
+      extra.style.display = "flex";
+      if (dig === ultimoCnpj) return; // ja consultado
+      ultimoCnpj = dig;
+      razaoEl.value = "Buscando dados do CNPJ...";
+      cnaeEl.value = "";
+      try {
+        const raiz = dig.slice(0, 8);
+        const ordem = dig.slice(8, 12);
+        const resp = await fetch(
+          `${CONSULTA_BASE}/consulta/cnpj/${raiz}/${ordem}`
+        );
+        const arr = await resp.json();
+        const reg = Array.isArray(arr) ? arr[0] : arr;
+        if (reg && reg.razao_social) {
+          razaoEl.value = reg.razao_social || "";
+          cnaeEl.value = reg.cnae_fiscal_desc || reg.cnae_fiscal || "";
+        } else {
+          razaoEl.value = "CNPJ não encontrado na base";
+          cnaeEl.value = "";
+        }
+      } catch (e) {
+        razaoEl.value = "";
+        cnaeEl.value = "";
+      }
+    }
 
     // Mostrar/ocultar senha
     document.querySelectorAll(".toggle-eye").forEach((btn) => {
