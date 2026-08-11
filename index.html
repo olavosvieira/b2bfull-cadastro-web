@@ -1,180 +1,309 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Cadastro - B2B Full</title>
-<style>
-  :root {
-    --accent: #e04b31;
-    --bg: #f6f7f9;
-    --surface: #ffffff;
-    --ink: #1c1f26;
-    --ink-muted: #6b7280;
-    --border: #e2e4e9;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-  }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    max-width: 480px;
-    width: 100%;
-    padding: 32px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  h1 { font-size: 22px; margin: 0 0 4px; }
-  p.sub { color: var(--ink-muted); margin: 0 0 24px; font-size: 14px; }
-  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; margin-top: 16px; }
-  input, select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    background: var(--surface);
-    color: var(--ink);
-  }
-  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .row { display: flex; gap: 12px; }
-  .row > div { flex: 1; }
-  .modo-opcoes {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-  }
-  .modo-opcao {
-    flex: 1;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-    cursor: pointer;
-    font-size: 13px;
-    text-align: center;
-  }
-  .modo-opcao.selecionado {
-    border-color: var(--accent);
-    background: #fdf1ee;
-    font-weight: 600;
-  }
-  #planos { margin-top: 12px; display: none; }
-  #planos.visivel { display: block; }
-  button[type="submit"] {
-    width: 100%;
-    margin-top: 24px;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: var(--accent);
-    color: white;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
-  .msg { margin-top: 16px; padding: 12px; border-radius: 8px; font-size: 14px; display: none; }
-  .msg.erro { background: #fdecea; color: #a12b1f; display: block; }
-  .msg.sucesso { background: #eaf7ee; color: #1e6b34; display: block; }
-  .logo { font-weight: 800; letter-spacing: -0.02em; margin-bottom: 20px; }
-  .logo span { color: var(--accent); }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro - B2B Full</title>
+  <style>
+    :root {
+      --red: #e30613;
+      --red-hover: #c40510;
+      --dark: #0c0c0e;
+      --text: #1a1a1a;
+      --muted: #8a8a8a;
+      --border: #dcdcdc;
+      --border-focus: #b5b5b5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: #fff;
+    }
+    .wrap {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Coluna esquerda (hero escuro) ---------- */
+    .hero {
+      position: relative;
+      flex: 1 1 50%;
+      background: var(--dark);
+      /* Placeholder do grafico do mapa (trocar pela imagem do Figma):
+         basta definir --hero-img: url('hero.png') que ela aparece sobre o fundo. */
+      background-image:
+        radial-gradient(60% 55% at 45% 55%, rgba(227,6,19,0.30) 0%, rgba(227,6,19,0) 60%),
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 34px 34px, 34px 34px;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      padding: 40px;
+      overflow: hidden;
+    }
+    .hero.has-image { background-image: var(--hero-img); background-size: cover; background-position: center; }
+    .hero-logo {
+      align-self: center;
+      width: 100%;
+      max-width: 560px;
+      background: #17171a;
+      border: 1px solid #2a2a2e;
+      border-radius: 16px;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+    }
+    .hero-logo .logo-mark {
+      font-weight: 800;
+      font-size: 30px;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+    .hero-logo .logo-mark b { color: var(--red); }
+    .hero-logo .logo-sub {
+      color: #cfcfcf; font-size: 10px; letter-spacing: 6px; margin-top: 2px; display:block;
+    }
+    .hero-copy {
+      margin-top: auto;
+      text-align: center;
+      color: #fff;
+      padding-bottom: 6px;
+    }
+    .hero-copy .small { font-size: 14px; color: #e6e6e6; }
+    .hero-copy .big { font-size: 22px; font-weight: 700; margin: 4px 0 14px; }
+    .hero-copy .phone {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 15px; color: #fff;
+    }
+    .hero-copy .phone svg { fill: var(--red); }
+
+    /* ---------- Coluna direita (formulario) ---------- */
+    .panel {
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 6vw;
+      overflow-y: auto;
+    }
+    .topbar { width: 100%; display: flex; justify-content: flex-end; }
+    .login-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text); text-decoration: none; font-size: 15px;
+    }
+    .login-link:hover { color: var(--red); }
+
+    .form-area { width: 100%; max-width: 440px; margin: auto 0; }
+    .form-area h1 { text-align: center; font-size: 30px; font-weight: 700; }
+    .form-area .subtitle {
+      text-align: center; color: var(--muted); font-size: 15px;
+      margin: 10px 0 26px; line-height: 1.4;
+    }
+
+    form { display: flex; flex-direction: column; gap: 14px; }
+    .row { display: flex; gap: 14px; }
+    .row > * { flex: 1; }
+    .field { position: relative; }
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 15px;
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      outline: none;
+      transition: border-color .15s;
+      background: #fff;
+      color: var(--text);
+    }
+    input::placeholder { color: #9a9a9a; }
+    input:focus { border-color: var(--border-focus); }
+    .field .toggle-eye {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px; color: #8a8a8a;
+      display: flex;
+    }
+
+    .strength { display: flex; gap: 10px; margin: 2px 4px 0; }
+    .strength span {
+      flex: 1; height: 4px; border-radius: 3px; background: #e4e4e4; transition: background .2s;
+    }
+    .hint { text-align: center; color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+    .btn-submit {
+      margin-top: 6px;
+      padding: 15px;
+      border: none;
+      border-radius: 26px;
+      background: var(--red);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-submit:hover { background: var(--red-hover); }
+    .btn-submit:disabled { opacity: .6; cursor: default; }
+
+    .go-login { text-align: center; font-size: 14px; margin-top: 4px; }
+    .go-login a { color: var(--red); font-weight: 600; text-decoration: none; }
+    .go-login a:hover { text-decoration: underline; }
+
+    .msg { font-size: 14px; border-radius: 10px; padding: 12px; display: none; text-align: center; }
+    .msg.erro { background: #fdecea; color: #a12b1f; display: block; }
+    .msg.sucesso { background: #eaf7ee; color: #1e6b34; display: block; }
+
+    .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 18px 0 4px; }
+
+    /* ---------- Responsivo ---------- */
+    @media (max-width: 900px) {
+      .wrap { flex-direction: column; }
+      .hero { min-height: 260px; padding: 24px; }
+      .hero-logo { max-width: 100%; padding: 16px 20px; }
+      .hero-logo .logo-mark { font-size: 24px; }
+      .panel { padding: 28px 22px; }
+    }
+  </style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo">B2B<span>Full</span></div>
-    <h1>Criar conta</h1>
-    <p class="sub">Preencha seus dados para acessar a plataforma.</p>
-
-    <form id="form-cadastro">
-      <div class="row">
+  <div class="wrap">
+    <!-- ================= HERO (esquerda) ================= -->
+    <aside class="hero" id="hero">
+      <div class="hero-logo">
         <div>
-          <label for="first_name">Nome</label>
-          <input id="first_name" name="first_name" required />
-        </div>
-        <div>
-          <label for="last_name">Sobrenome</label>
-          <input id="last_name" name="last_name" required />
+          <span class="logo-mark">B2B<b>FULL</b></span>
+          <span class="logo-sub">F U L L</span>
         </div>
       </div>
 
-      <label for="email">E-mail</label>
-      <input id="email" name="email" type="email" required />
+      <div class="hero-copy">
+        <div class="small">Tudo em um só lugar!</div>
+        <div class="big">Prático, funcional e full.</div>
+        <a class="phone" href="tel:08000003184">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.3 1l-2.2 2.2z"/></svg>
+          0800 000 3184
+        </a>
+      </div>
+    </aside>
 
-      <label for="password">Senha</label>
-      <input id="password" name="password" type="password" minlength="6" required />
-
-      <div class="row">
-        <div>
-          <label for="cpf_cnpj">CPF ou CNPJ</label>
-          <input id="cpf_cnpj" name="cpf_cnpj" required />
-        </div>
-        <div>
-          <label for="phone_number">Telefone</label>
-          <input id="phone_number" name="phone_number" required />
-        </div>
+    <!-- ================= FORMULÁRIO (direita) ================= -->
+    <main class="panel">
+      <div class="topbar">
+        <a class="login-link" href="#">
+          Login
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.3 0-9 1.7-9 5v1h18v-1c0-3.3-5.7-5-9-5z"/></svg>
+        </a>
       </div>
 
-      <div id="bloco-modo">
-        <label>Como deseja liberar o acesso?</label>
-        <div class="modo-opcoes">
-          <div class="modo-opcao selecionado" data-modo="manual">Solicitar aprovação</div>
-          <div class="modo-opcao" data-modo="pagamento">Pagar e liberar agora</div>
-        </div>
+      <div class="form-area">
+        <h1>Seja bem-vindo ao B2B Full!</h1>
+        <p class="subtitle">Insira seus dados abaixo para cadastrar-se na plataforma e começar seu projeto!</p>
 
-        <div id="planos">
-          <label for="plano_dias">Plano</label>
-          <select id="plano_dias" name="plano_dias">
-            <option value="30">Mensal (30 dias)</option>
-            <option value="90">Trimestral (90 dias)</option>
-            <option value="365">Anual (365 dias)</option>
-          </select>
-        </div>
+        <form id="form-cadastro" novalidate>
+          <div class="row">
+            <input id="first_name" name="first_name" placeholder="Nome" required />
+            <input id="last_name" name="last_name" placeholder="Sobrenome" required />
+          </div>
+
+          <input id="email" name="email" type="email" placeholder="E-mail" required />
+
+          <div class="field">
+            <input id="password" name="password" type="password" placeholder="Senha" minlength="8" required />
+            <button type="button" class="toggle-eye" data-target="password" aria-label="Mostrar senha">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+            </button>
+          </div>
+
+          <div class="row">
+            <input id="cpf_cnpj" name="cpf_cnpj" placeholder="CPF ou CNPJ" required />
+            <input id="phone_number" name="phone_number" placeholder="Telefone" required />
+          </div>
+
+          <div class="strength" id="strength" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="hint">Use 8 ou mais caracteres com letras, números e símbolos.</div>
+
+          <div class="field">
+            <input id="confirm_password" type="password" placeholder="Confirme a senha" required />
+            <button type="button" class="toggle-eye" data-target="confirm_password" aria-label="Mostrar senha">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+            </button>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-enviar">Cadastrar-se</button>
+
+          <div class="msg" id="mensagem"></div>
+
+          <p class="go-login">Já possui conta? <a href="#">Faça login</a></p>
+        </form>
       </div>
 
-      <button type="submit" id="btn-enviar">Criar conta</button>
-      <div class="msg" id="mensagem"></div>
-    </form>
+      <div class="footer">Copyright©2025 B2B FULL - Todos os direitos reservados</div>
+    </main>
   </div>
 
   <script>
     const API_BASE = "https://b2bfull-cadastro-frqkw.ondigitalocean.app";
 
-    // Pagamento via Asaas desligado ate as credenciais estarem configuradas no
-    // App Platform (ASAAS_API_KEY e ASAAS_WEBHOOK_TOKEN estao vazias e os
-    // PLANO_*_PRECO estao em "0"). Com isso o unico caminho e "manual".
-    // Para reativar: trocar para true depois de preencher as variaveis.
-    const PAGAMENTO_HABILITADO = false;
-
     const form = document.getElementById("form-cadastro");
-    const opcoes = document.querySelectorAll(".modo-opcao");
-    const planosDiv = document.getElementById("planos");
     const mensagem = document.getElementById("mensagem");
     const btnEnviar = document.getElementById("btn-enviar");
-    let modoSelecionado = "manual";
+    const senha = document.getElementById("password");
+    const confirmar = document.getElementById("confirm_password");
+    const barras = document.querySelectorAll("#strength span");
 
-    if (!PAGAMENTO_HABILITADO) {
-      document.getElementById("bloco-modo").style.display = "none";
+    // ---------- Máscaras (CPF/CNPJ e Telefone) ----------
+    // Preenche o "pattern" (onde '0' = dígito) com os dígitos informados,
+    // parando quando os dígitos acabam (não deixa separador sobrando).
+    function aplicarMascara(digitos, pattern) {
+      let out = "", di = 0;
+      for (const ch of pattern) {
+        if (di >= digitos.length) break;
+        if (ch === "0") out += digitos[di++];
+        else out += ch;
+      }
+      return out;
+    }
+    function soDigitos(v) { return v.replace(/\D/g, ""); }
+
+    function mascaraCpfCnpj(v) {
+      const d = soDigitos(v).slice(0, 14); // limita a 14 dígitos (CNPJ)
+      return aplicarMascara(d, d.length <= 11 ? "000.000.000-00" : "00.000.000/0000-00");
+    }
+    function mascaraTelefone(v) {
+      const d = soDigitos(v).slice(0, 11); // limita a 11 dígitos (celular)
+      return aplicarMascara(d, d.length <= 10 ? "(00) 0000-0000" : "(00) 00000-0000");
     }
 
-    opcoes.forEach((opcao) => {
-      opcao.addEventListener("click", () => {
-        if (!PAGAMENTO_HABILITADO) return;
-        opcoes.forEach((o) => o.classList.remove("selecionado"));
-        opcao.classList.add("selecionado");
-        modoSelecionado = opcao.dataset.modo;
-        planosDiv.classList.toggle("visivel", modoSelecionado === "pagamento");
+    const cpfEl = document.getElementById("cpf_cnpj");
+    const telEl = document.getElementById("phone_number");
+    cpfEl.addEventListener("input", () => { cpfEl.value = mascaraCpfCnpj(cpfEl.value); });
+    telEl.addEventListener("input", () => { telEl.value = mascaraTelefone(telEl.value); });
+
+    // Mostrar/ocultar senha
+    document.querySelectorAll(".toggle-eye").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const alvo = document.getElementById(btn.dataset.target);
+        alvo.type = alvo.type === "password" ? "text" : "password";
       });
+    });
+
+    // Medidor de força da senha
+    function forcaSenha(v) {
+      let s = 0;
+      if (v.length >= 8) s++;
+      if (/[a-z]/.test(v) && /[A-Z]/.test(v)) s++;
+      if (/\d/.test(v)) s++;
+      if (/[^A-Za-z0-9]/.test(v)) s++;
+      return s; // 0..4
+    }
+    const cores = ["#e4e4e4", "#e30613", "#ff8a00", "#f2c200", "#28a745"];
+    senha.addEventListener("input", () => {
+      const s = forcaSenha(senha.value);
+      barras.forEach((b, i) => (b.style.background = i < s ? cores[s] : "#e4e4e4"));
     });
 
     function mostrarMensagem(texto, tipo) {
@@ -185,6 +314,12 @@
     form.addEventListener("submit", async (evento) => {
       evento.preventDefault();
       mensagem.className = "msg";
+
+      if (senha.value !== confirmar.value) {
+        mostrarMensagem("As senhas não coincidem.", "erro");
+        return;
+      }
+
       btnEnviar.disabled = true;
       btnEnviar.textContent = "Enviando...";
 
@@ -192,14 +327,11 @@
         first_name: document.getElementById("first_name").value.trim(),
         last_name: document.getElementById("last_name").value.trim(),
         email: document.getElementById("email").value.trim(),
-        password: document.getElementById("password").value,
+        password: senha.value,
         cpf_cnpj: document.getElementById("cpf_cnpj").value.trim(),
         phone_number: document.getElementById("phone_number").value.trim(),
-        modo: modoSelecionado,
+        modo: "manual",
       };
-      if (modoSelecionado === "pagamento") {
-        dados.plano_dias = Number(document.getElementById("plano_dias").value);
-      }
 
       try {
         const resposta = await fetch(`${API_BASE}/register`, {
@@ -210,26 +342,20 @@
         const corpo = await resposta.json();
 
         if (!resposta.ok) {
-          throw new Error(corpo.message || "Nao foi possivel concluir o cadastro.");
-        }
-
-        if (corpo.status === "aguardando_pagamento" && corpo.checkoutUrl) {
-          mostrarMensagem("Cadastro criado! Redirecionando para o pagamento...", "sucesso");
-          window.location.href = corpo.checkoutUrl;
-          return;
+          throw new Error(corpo.message || "Não foi possível concluir o cadastro.");
         }
 
         mostrarMensagem(
-          "Cadastro enviado! Assim que for aprovado, voce recebera acesso a plataforma.",
+          "Cadastro enviado! Assim que for aprovado, você receberá acesso à plataforma.",
           "sucesso"
         );
         form.reset();
-        opcoes[0].click();
+        barras.forEach((b) => (b.style.background = "#e4e4e4"));
       } catch (erro) {
         mostrarMensagem(erro.message, "erro");
       } finally {
         btnEnviar.disabled = false;
-        btnEnviar.textContent = "Criar conta";
+        btnEnviar.textContent = "Cadastrar-se";
       }
     });
   </script>
