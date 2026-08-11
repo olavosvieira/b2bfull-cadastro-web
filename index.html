@@ -158,6 +158,7 @@
 
     .msg { font-size: 14px; border-radius: 10px; padding: 12px; display: none; text-align: center; }
     .msg.erro { background: #fdecea; color: #a12b1f; display: block; }
+    .msg a { color: #a12b1f; font-weight: 700; text-decoration: underline; }
     .msg.sucesso { background: #eaf7ee; color: #1e6b34; display: block; }
 
     .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 18px 0 4px; }
@@ -251,7 +252,7 @@
 
           <div class="msg" id="mensagem"></div>
 
-          <p class="go-login">Já possui conta? <a href="https://www.b2bfull.com.br">Faça login</a></p>
+          <p class="go-login">Já possui conta? <a href="https://www.b2bfull.com.br">Faça login</a> ou <a href="https://www.b2bfull.com.br/esqueci-senha">recupere a senha</a></p>
         </form>
       </div>
 
@@ -411,6 +412,17 @@
         const corpo = await resposta.json();
 
         if (!resposta.ok) {
+          const jaExiste =
+            resposta.status === 409 ||
+            /exist|já.*cadastr|already/i.test(corpo.message || "");
+          if (jaExiste) {
+            mensagem.className = "msg erro";
+            mensagem.innerHTML =
+              "Este e-mail já possui cadastro. " +
+              '<a href="https://www.b2bfull.com.br">Faça login</a> ou ' +
+              '<a href="https://www.b2bfull.com.br/esqueci-senha">recupere a senha</a>.';
+            return;
+          }
           throw new Error(corpo.message || "Não foi possível concluir o cadastro.");
         }
 
