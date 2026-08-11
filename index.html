@@ -30,42 +30,31 @@
     .hero {
       position: relative;
       flex: 1 1 50%;
-      background: var(--dark);
-      /* Placeholder do grafico do mapa (trocar pela imagem do Figma):
-         basta definir --hero-img: url('hero.png') que ela aparece sobre o fundo. */
+      background-color: var(--dark);
+      /* Mapa do Brasil (hero). Um gradiente escuro por cima melhora a leitura
+         do logo (topo) e da chamada + telefone (base). */
       background-image:
-        radial-gradient(60% 55% at 45% 55%, rgba(227,6,19,0.30) 0%, rgba(227,6,19,0) 60%),
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 100% 100%, 34px 34px, 34px 34px;
-      background-position: center;
+        linear-gradient(180deg, rgba(12,12,14,0.55) 0%, rgba(12,12,14,0) 30%, rgba(12,12,14,0) 60%, rgba(12,12,14,0.85) 100%),
+        url('mapa.png');
+      background-size: cover, cover;
+      background-position: center, center;
+      background-repeat: no-repeat, no-repeat;
       display: flex;
       flex-direction: column;
       padding: 40px;
       overflow: hidden;
     }
-    .hero.has-image { background-image: var(--hero-img); background-size: cover; background-position: center; }
     .hero-logo {
-      align-self: center;
-      width: 100%;
-      max-width: 560px;
-      background: #17171a;
+      align-self: flex-start;
+      background: rgba(20,20,23,0.72);
       border: 1px solid #2a2a2e;
-      border-radius: 16px;
-      padding: 22px 28px;
-      display: flex;
+      border-radius: 14px;
+      padding: 16px 22px;
+      display: inline-flex;
       align-items: center;
+      backdrop-filter: blur(2px);
     }
-    .hero-logo .logo-mark {
-      font-weight: 800;
-      font-size: 30px;
-      letter-spacing: 2px;
-      color: #fff;
-    }
-    .hero-logo .logo-mark b { color: var(--red); }
-    .hero-logo .logo-sub {
-      color: #cfcfcf; font-size: 10px; letter-spacing: 6px; margin-top: 2px; display:block;
-    }
+    .hero-logo svg { height: 40px; width: auto; display: block; }
     .hero-copy {
       margin-top: auto;
       text-align: center;
@@ -160,9 +149,9 @@
     /* ---------- Responsivo ---------- */
     @media (max-width: 900px) {
       .wrap { flex-direction: column; }
-      .hero { min-height: 260px; padding: 24px; }
-      .hero-logo { max-width: 100%; padding: 16px 20px; }
-      .hero-logo .logo-mark { font-size: 24px; }
+      .hero { min-height: 300px; padding: 24px; }
+      .hero-logo { padding: 14px 18px; }
+      .hero-logo svg { height: 32px; }
       .panel { padding: 28px 22px; }
     }
   </style>
@@ -172,10 +161,19 @@
     <!-- ================= HERO (esquerda) ================= -->
     <aside class="hero" id="hero">
       <div class="hero-logo">
-        <div>
-          <span class="logo-mark">B2B<b>FULL</b></span>
-          <span class="logo-sub">F U L L</span>
-        </div>
+        <svg viewBox="0 0 103 34" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="B2B Full">
+          <g clip-path="url(#clip0_14_7)">
+            <path d="M0.00938416 0.030304H25.0264C29.2009 0.030304 31.2271 2.57826 31.2271 5.95461C31.2271 7.76582 30.6441 9.33096 29.4159 10.4061C30.6433 11.6033 31.2271 13.4448 31.2271 15.3476V15.624C31.2271 18.755 29.2016 21.518 25.0264 21.518H0.00938416V0.030304ZM23.5536 2.82361H4.98191V9.02429H23.5529C25.3331 9.02429 26.1622 7.73479 26.1622 5.95461C26.1622 4.17443 25.3331 2.82361 23.5529 2.82361H23.5536ZM26.1629 15.624V15.3476C26.1629 14.1815 25.8252 11.8789 23.5536 11.8486H4.98191V18.7247H23.5529C25.3331 18.7247 26.1622 17.4049 26.1622 15.6247L26.1629 15.624ZM29.2939 10.2517C29.2939 10.2828 29.325 10.2828 29.325 10.3131C29.325 10.282 29.2939 10.282 29.2939 10.2517Z" fill="white"/>
+            <path d="M43.4466 11.8176C42.0034 11.8176 40.1006 13.6598 40.1006 15.1636C40.1006 17.0672 42.0034 18.5097 43.4466 18.5097H67.0515V21.518H42.1874C37.614 21.518 35.8331 18.8171 35.8331 15.1636C35.8331 11.941 37.6132 8.84028 42.1874 8.84028H59.4697C61.2809 8.84028 62.7847 7.39709 62.7847 5.95462C62.7847 4.08207 61.2802 3.00762 59.4697 3.00762H35.8338V0H60.6978C65.1797 0 67.0522 2.33292 67.0522 5.95462C67.0522 9.05459 65.1797 11.8176 60.6978 11.8176H43.4466Z" fill="white"/>
+            <path d="M71.7816 0.030304H96.7986C100.973 0.030304 102.999 2.57826 102.999 5.95461C102.999 7.76582 102.416 9.33096 101.188 10.4061C102.416 11.6033 102.999 13.4448 102.999 15.3476V15.624C102.999 18.755 100.974 21.518 96.7986 21.518H71.7816V0.030304ZM95.3258 2.82361H76.7548V9.02429H95.3258C97.106 9.02429 97.9351 7.73479 97.9351 5.95461C97.9351 4.17443 97.106 2.82361 95.3258 2.82361ZM97.9351 15.624V15.3476C97.9351 14.1815 97.5974 11.8789 95.3258 11.8486H76.7548V18.7247H95.3258C97.106 18.7247 97.9351 17.4049 97.9351 15.6247V15.624ZM101.066 10.2517C101.066 10.2828 101.097 10.2828 101.097 10.3131C101.097 10.282 101.066 10.282 101.066 10.2517Z" fill="white"/>
+            <path d="M1.63225 28.4598V29.3935H9.96092V30.3374H1.63225V33.4547H0V28.4591C0 27.456 0.589544 26.5613 2.03562 26.5613H9.96165V27.5246H2.41879C1.99594 27.5246 1.63225 27.9965 1.63225 28.4591V28.4598Z" fill="white"/>
+            <path d="M30.6332 26.562H32.2265V31.4493C32.2265 32.0194 32.4524 32.3636 33.0037 32.3636H38.0087C38.4416 32.3636 38.6581 32.0194 38.6581 31.4493V26.562H40.3885V31.4493C40.3885 32.5902 39.6806 33.4359 38.4019 33.4359H32.4921C31.204 33.4359 30.6332 32.5902 30.6332 31.4493V26.562Z" fill="white"/>
+            <path d="M63.45 32.5115H70.9236V33.4655H63.0365C61.6107 33.4655 61.0406 32.7475 61.0406 31.5973V26.5822H62.6534V31.5973C62.6534 32.1673 62.9976 32.5115 63.45 32.5115Z" fill="white"/>
+            <path d="M93.9945 32.5115H101.468V33.4655H93.581C92.1551 33.4655 91.5851 32.7475 91.5851 31.5973V26.5822H93.1978V31.5973C93.1978 32.1673 93.542 32.5115 93.9945 32.5115Z" fill="white"/>
+            <path d="M54.2475 30.5524L51.3531 33.4467L48.4588 30.5524C48.3737 30.3821 48.2459 30.2544 48.2459 29.9989C48.2459 29.7861 48.3311 29.5732 48.4588 29.4455L51.3531 26.5512L54.2475 29.4455C54.3326 29.6158 54.4603 29.7435 54.4603 29.9989C54.4603 30.2118 54.3752 30.4247 54.2475 30.5524Z" fill="#FF0000"/>
+          </g>
+          <defs><clipPath id="clip0_14_7"><rect width="103" height="33.4655" fill="white"/></clipPath></defs>
+        </svg>
       </div>
 
       <div class="hero-copy">
