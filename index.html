@@ -115,9 +115,10 @@
       display: flex;
     }
 
-    /* Campos obrigatorios: asterisco vermelho + destaque quando vazio */
+    /* Campos obrigatorios: asterisco vermelho SO quando vazio + destaque */
     .fld { position: relative; display: block; }
-    .fld::after, .field::after {
+    .fld:has(input:placeholder-shown)::after,
+    .field:has(input:placeholder-shown)::after {
       content: "*";
       position: absolute; top: 9px; right: 16px;
       font-size: 14px; font-weight: 700; line-height: 1;
