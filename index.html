@@ -416,9 +416,11 @@
             resposta.status === 409 ||
             /exist|já.*cadastr|already/i.test(corpo.message || "");
           if (jaExiste) {
+            const base = (corpo.message || "Este e-mail já possui cadastro")
+              .replace(/\.$/, "");
             mensagem.className = "msg erro";
             mensagem.innerHTML =
-              "Este e-mail já possui cadastro. " +
+              base + ". " +
               '<a href="https://www.b2bfull.com.br">Faça login</a> ou ' +
               '<a href="https://www.b2bfull.com.br/esqueci-senha">recupere a senha</a>.';
             return;
