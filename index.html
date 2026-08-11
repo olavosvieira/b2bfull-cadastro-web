@@ -234,17 +234,6 @@
             </button>
           </div>
 
-          <div class="row">
-            <span class="fld"><input id="cpf_cnpj" name="cpf_cnpj" placeholder="CPF ou CNPJ" required /></span>
-            <span class="fld"><input id="phone_number" name="phone_number" placeholder="Telefone" required /></span>
-          </div>
-
-          <!-- Preenchidos automaticamente ao digitar um CNPJ (base própria) -->
-          <div id="cnpj-extra">
-            <input id="razao_social" name="razao_social" placeholder="Razão Social" readonly />
-            <input id="cnae_principal" name="cnae_principal" placeholder="CNAE Principal" readonly />
-          </div>
-
           <div class="strength" id="strength" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
           </div>
@@ -255,6 +244,17 @@
             <button type="button" class="toggle-eye" data-target="confirm_password" aria-label="Mostrar senha">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
             </button>
+          </div>
+
+          <div class="row">
+            <span class="fld"><input id="cpf_cnpj" name="cpf_cnpj" placeholder="CPF ou CNPJ" required /></span>
+            <span class="fld"><input id="phone_number" name="phone_number" placeholder="Telefone" required /></span>
+          </div>
+
+          <!-- Preenchidos automaticamente ao digitar um CNPJ (base própria) -->
+          <div id="cnpj-extra">
+            <input id="razao_social" name="razao_social" placeholder="Razão Social" readonly />
+            <input id="cnae_principal" name="cnae_principal" placeholder="CNAE Principal" readonly />
           </div>
 
           <button type="submit" class="btn-submit" id="btn-enviar">Cadastrar-se</button>
@@ -451,6 +451,12 @@
       btnEnviar.disabled = true;
       btnEnviar.textContent = "Enviando...";
 
+      // Razao Social / CNAE so quando forem dados validos (CNPJ encontrado)
+      const razaoVal = document.getElementById("razao_social").value;
+      const cnaeVal = document.getElementById("cnae_principal").value;
+      const razaoOk =
+        razaoVal && !/Buscando|não encontrado/i.test(razaoVal) ? razaoVal : "";
+
       const dados = {
         first_name: nome,
         last_name: sobrenome,
@@ -458,6 +464,8 @@
         password: senha.value,
         cpf_cnpj: cpfCnpj,
         phone_number: telefone,
+        razao_social: razaoOk,
+        cnae_principal: razaoOk ? cnaeVal : "",
         modo: "manual",
       };
 
