@@ -313,8 +313,43 @@
       evento.preventDefault();
       mensagem.className = "msg";
 
+      const nome = document.getElementById("first_name").value.trim();
+      const sobrenome = document.getElementById("last_name").value.trim();
+      const emailValor = document.getElementById("email").value.trim();
+      const cpfCnpj = document.getElementById("cpf_cnpj").value.trim();
+      const telefone = document.getElementById("phone_number").value.trim();
+
+      // Todos os campos são obrigatórios
+      if (
+        !nome || !sobrenome || !emailValor ||
+        !senha.value || !confirmar.value || !cpfCnpj || !telefone
+      ) {
+        mostrarMensagem("Preencha todos os campos.", "erro");
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValor)) {
+        mostrarMensagem("Informe um e-mail válido.", "erro");
+        return;
+      }
+      if (senha.value.length < 8) {
+        mostrarMensagem("A senha deve ter ao menos 8 caracteres.", "erro");
+        return;
+      }
       if (senha.value !== confirmar.value) {
         mostrarMensagem("As senhas não coincidem.", "erro");
+        return;
+      }
+      const cpfDigitos = cpfCnpj.replace(/\D/g, "");
+      if (cpfDigitos.length !== 11 && cpfDigitos.length !== 14) {
+        mostrarMensagem(
+          "Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) completo.",
+          "erro"
+        );
+        return;
+      }
+      const telDigitos = telefone.replace(/\D/g, "");
+      if (telDigitos.length !== 10 && telDigitos.length !== 11) {
+        mostrarMensagem("Informe um telefone válido com DDD.", "erro");
         return;
       }
 
@@ -322,12 +357,12 @@
       btnEnviar.textContent = "Enviando...";
 
       const dados = {
-        first_name: document.getElementById("first_name").value.trim(),
-        last_name: document.getElementById("last_name").value.trim(),
-        email: document.getElementById("email").value.trim(),
+        first_name: nome,
+        last_name: sobrenome,
+        email: emailValor,
         password: senha.value,
-        cpf_cnpj: document.getElementById("cpf_cnpj").value.trim(),
-        phone_number: document.getElementById("phone_number").value.trim(),
+        cpf_cnpj: cpfCnpj,
+        phone_number: telefone,
         modo: "manual",
       };
 
